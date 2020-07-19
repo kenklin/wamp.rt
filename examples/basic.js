@@ -34,15 +34,12 @@ function onPublish(topicUri, args) {
 // WebSocket server
 //
 var app = new Router(
-    { port: program.port,
-      // The router will select the appropriate protocol,
-      // but we can still deny the connection
-      // TODO: this should be the other way round, really ...
-      handleProtocols: function(protocols,cb) {
-          console.log(protocols);
-          cb(true,protocols[0]);
-          //cb(false);
-      }
+    {
+        port: program.port,
+        // Optionally override the Sec-WebSocket-Protocol header
+        handleProtocols: (protocols, request) => {
+            return protocols.includes("wamp.2.json") ? "wamp.2.json" : false;
+        }
     }
 );
 
